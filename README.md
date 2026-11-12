@@ -46,3 +46,13 @@ fonts/              Big Shoulders, Big Shoulders Stencil, Public Sans (OFL)
 - The safety start date (`safety()` in `js/main.js`)
 - The quote form only shows a confirmation; connect it to Formspree, EmailJS or your own backend in `form()` in `js/main.js`
 - Colours live at the top of `css/style.css` (`--navy`, `--yellow` …)
+
+## Expertise carousel (McCarthy-style)
+
+Centred, looping carousel: side cards sit at 77% scale, the active card grows to full size and its caption opens (1 s ease-out-cubic, the same timing as the McCarthy site). Arrows, swipe, keyboard arrows and clicking a side card all work.
+
+To use real photos instead of the illustrations, put them in an `images/` folder and add a `photo` field to that slide in `SLIDES` (`js/main.js`):
+
+```js
+{ label: 'Safety', title: '…', link: '#safety', cta: '…', scene: 'safety', photo: 'images/safety.jpg' },
+```

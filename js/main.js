@@ -328,6 +328,91 @@ function projects() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Expertise carousel: centred, looping, 1s ease-out-cubic             */
+/* To use a real photo, add `photo: 'images/safety.jpg'` to a slide.   */
+/* ------------------------------------------------------------------ */
+const SLIDES = [
+  { label: 'Safety', title: 'Nothing on our sites matters more than everyone going home safe', link: '#safety', cta: 'See our safety record', scene: 'safety' },
+  { label: 'Design and technology', title: 'We build every project in 3D before the first pour', link: '#process', cta: 'How we build', scene: 'training' },
+  { label: 'Equipment', title: 'Our own cranes and machines, so your schedule never waits for a rental', link: '#contact', cta: 'Talk to us', scene: 'community' },
+  { label: 'Site surveys', title: 'Drone and ground scans find pipes and cables before we dig', link: '#process', cta: 'How we build', scene: 'tech' },
+  { label: 'Quality', title: 'Every concrete pour is tested, and you get the results', link: '#contact', cta: 'Ask for a sample report', scene: 'quality' },
+];
+
+async function expertise() {
+  const root = document.getElementById('lc');
+  const track = document.getElementById('lc-track');
+  const bg = document.getElementById('lc-bg');
+  const live = document.getElementById('lc-live');
+  const { SCENES } = await import('./scenes.js');
+  const media = (s) => (s.photo ? `<img src="${s.photo}" alt="" loading="lazy">` : SCENES[s.scene]());
+  const N = SLIDES.length;
+
+  track.innerHTML = SLIDES.map((s, i) => `
+    <div class="lc__slide" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${N}: ${s.label}" data-i="${i}">
+      <div class="lc__card">
+        <div class="lc__media">${media(s)}</div>
+        <div class="lc__cap">
+          <p class="lc__label">${s.label}</p>
+          <div class="lc__grow"><div>
+            <h3 class="lc__title">${s.title}</h3>
+            <div class="lc__hr"></div>
+            <a class="lc__more" href="${s.link}">${s.cta}</a>
+          </div></div>
+        </div>
+      </div>
+    </div>`).join('');
+  bg.innerHTML = SLIDES.map((s) => `<div>${media(s)}</div>`).join('');
+
+  const slides = [...track.children];
+  const bgs = [...bg.children];
+  let active = 0;
+  const prevOffset = new Array(N).fill(null);
+
+  function render() {
+    slides.forEach((el, i) => {
+      let o = ((i - active) % N + N) % N;
+      if (o > N / 2) o -= N;
+      const jump = prevOffset[i] !== null && Math.abs(prevOffset[i] - o) > 1;
+      el.classList.toggle('no-anim', jump || reduced);
+      el.style.setProperty('--o', o);
+      el.classList.toggle('is-active', o === 0);
+      el.classList.toggle('is-far', Math.abs(o) > 1);
+      el.setAttribute('aria-hidden', String(o !== 0));
+      el.querySelectorAll('a').forEach((a) => (a.tabIndex = o === 0 ? 0 : -1));
+      prevOffset[i] = o;
+    });
+    bgs.forEach((b, i) => b.classList.toggle('is-on', i === active));
+    live.textContent = `${SLIDES[active].label}: ${SLIDES[active].title}`;
+  }
+  const go = (d) => { active = (active + d + N) % N; render(); };
+
+  document.getElementById('lc-prev').addEventListener('click', () => go(-1));
+  document.getElementById('lc-next').addEventListener('click', () => go(1));
+  // click a side card to bring it to the centre
+  track.addEventListener('click', (e) => {
+    const s = e.target.closest('.lc__slide');
+    if (!s || s.classList.contains('is-active')) return;
+    e.preventDefault();
+    go(+s.style.getPropertyValue('--o'));
+  });
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') go(-1);
+    if (e.key === 'ArrowRight') go(1);
+  });
+  // swipe / drag
+  let sx = null;
+  root.addEventListener('pointerdown', (e) => { sx = e.clientX; });
+  window.addEventListener('pointerup', (e) => {
+    if (sx === null) return;
+    const dx = e.clientX - sx;
+    sx = null;
+    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+  });
+  render();
+}
+
+/* ------------------------------------------------------------------ */
 /* Safety board, nav, form                                             */
 /* ------------------------------------------------------------------ */
 function safety() {
@@ -397,6 +482,7 @@ blobs();
 buildTower();
 services();
 projects();
+expertise();
 nav();
 form();
 intro();
