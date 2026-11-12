@@ -26,7 +26,7 @@ export function initHat(canvas, { reduced = false } = {}) {
   scene.add(rim);
 
   const yellow = new THREE.MeshPhysicalMaterial({
-    color: 0xf0a800, roughness: 0.38, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, side: THREE.DoubleSide,
+    color: 0xd7262f, roughness: 0.36, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, side: THREE.DoubleSide,
   });
   const steel = new THREE.MeshStandardMaterial({ color: 0xdfe4ea, metalness: 1, roughness: 0.22 });
   const dark = new THREE.MeshStandardMaterial({ color: 0x23272d, roughness: 0.8 });

@@ -8,6 +8,8 @@ if (gsap && ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
 /* ------------------------------------------------------------------ */
 /* Hero: blueprint skyline with a cursor that reveals the built city   */
 /* ------------------------------------------------------------------ */
+const HERO_PHOTO = 'https://sonkin-bau.de/wp-content/uploads/2025/02/slide-bau-start.jpeg';
+
 function buildHero() {
   const BASE = 860;
   const parts = [
@@ -25,11 +27,8 @@ function buildHero() {
   const bp = document.getElementById('hero-bp');
   bp.innerHTML = ground + parts.map((p) => p.bp).join('');
   document.getElementById('hero-built').innerHTML =
-    `<rect width="1600" height="900" fill="url(#sky)"/>` +
-    `<circle cx="1180" cy="300" r="70" fill="#F7E3B5" opacity=".9"/>` +
-    parts.map((p) => p.bt).join('') +
-    `<rect y="${BASE}" width="1600" height="40" fill="#3A3F46"/>` +
-    Array.from({ length: 20 }, (_, i) => `<rect x="${i * 84}" y="${BASE + 18}" width="44" height="4" fill="#F5B700"/>`).join('');
+    `<rect width="1600" height="900" fill="#13294B"/>` +
+    `<image href="${HERO_PHOTO}" x="0" y="0" width="1600" height="900" preserveAspectRatio="xMidYMax slice"/>`;
 
   // stagger the line drawing on load
   bp.querySelectorAll('[pathLength]').forEach((el, i) => { el.classList.add('dr'); el.style.setProperty('--d', `${(i % 60) * 12}ms`); });
@@ -261,20 +260,17 @@ function services() {
   });
 }
 
+// Each tile shows a blueprint; hover / tap reveals the photo.
 const PROJECTS = [
-  { year: 2026, items: [
-    { name: 'Clifton Heights, Block B', place: 'Clifton', meta: '18 floors, 220 apartments', draw: { kind: 'tower', floors: 7, seed: 101 } },
-    { name: 'Faisal Trade Centre', place: 'Shahrah-e-Faisal', meta: 'Offices, 9 floors', draw: { kind: 'office', floors: 6, seed: 102 } },
-    { name: 'Sea View Villas', place: 'DHA Phase 8', meta: '24 family homes', draw: { kind: 'house', seed: 103 } },
+  { group: 'Aus unseren Baustellen', items: [
+    { name: 'Wohngebäude im Bau', meta: 'Rohbau mit Gerüst, moderne und effiziente Bauweise', photo: 'https://sonkin-bau.de/wp-content/uploads/2025/02/Newsletter-Soneo-Dezember-2019_page4_image.png', draw: { kind: 'tower', floors: 5, seed: 101 } },
+    { name: 'Neue Wohnanlage', meta: 'Zukunftsfähiges Wohnen, kurz vor der Übergabe', photo: 'https://sonkin-bau.de/wp-content/uploads/2025/02/slide-bau-start.jpeg', draw: { kind: 'office', floors: 4, wide: true, seed: 102 } },
+    { name: 'Unser Team vor Ort', meta: 'Persönliche Betreuung direkt auf der Baustelle', photo: 'https://sonkin-bau.de/wp-content/uploads/2025/02/unnamed-1.jpg', draw: { kind: 'house', seed: 103 } },
   ] },
-  { year: 2025, items: [
-    { name: 'Korangi Creek Link Road', place: 'Korangi', meta: '1.4 km road and bridge', draw: { kind: 'bridge', seed: 104 } },
-    { name: 'Gulshan Medical Centre', place: 'Gulshan-e-Iqbal', meta: 'Hospital, 120 beds', draw: { kind: 'office', floors: 4, wide: true, seed: 105 } },
-    { name: 'Rahman Residence', place: 'Bahria Town', meta: '500 sq yd house', draw: { kind: 'house', seed: 106 } },
-  ] },
-  { year: 2024, items: [
-    { name: 'Saddar Commerce Tower', place: 'Saddar', meta: '14 floors, mixed use', draw: { kind: 'tower', floors: 7, seed: 107 } },
-    { name: 'Nazimabad Grammar School', place: 'North Nazimabad', meta: '32 classrooms', draw: { kind: 'office', floors: 3, wide: true, seed: 108 } },
+  { group: 'Projektarten', items: [
+    { name: 'Moderne Wohnkomplexe', meta: 'Energieeffizient und barrierefrei geplant', photo: 'https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?w=900&q=75&auto=format&fit=crop', draw: { kind: 'tower', floors: 7, seed: 104 } },
+    { name: 'Gewerbeimmobilien', meta: 'Büro- und Geschäftsflächen mit Smart-Building-Technik', photo: 'https://images.unsplash.com/photo-1693471019113-d2837cc9a2cc?w=900&q=75&auto=format&fit=crop', draw: { kind: 'office', floors: 6, seed: 105 } },
+    { name: 'Pflegeheime und betreutes Wohnen', meta: 'Funktional für Bewohner und Personal', photo: 'https://images.unsplash.com/photo-1559234938-b60fff04894d?w=900&q=75&auto=format&fit=crop', draw: { kind: 'office', floors: 3, wide: true, seed: 106 } },
   ] },
 ];
 
@@ -292,20 +288,20 @@ function projectSVG(d) {
 
 function projects() {
   const host = document.getElementById('project-years');
-  host.innerHTML = PROJECTS.map((y) => `
-    <section class="year" aria-labelledby="y-${y.year}">
-      <h3 class="year__label" id="y-${y.year}">${y.year}</h3>
+  host.innerHTML = PROJECTS.map((y, i) => `
+    <section class="year" aria-labelledby="y-${i}">
+      <h3 class="year__label" id="y-${i}">${y.group}</h3>
       <ul class="tiles">
         ${y.items.map((p) => {
           const d = projectSVG(p.draw);
           return `<li>
-            <article class="tile" tabindex="0" aria-label="${p.name}, ${p.place}">
+            <article class="tile" tabindex="0" aria-label="${p.name}">
               <div class="tile__art" aria-hidden="true">
                 <svg class="tile__bp" viewBox="0 0 400 300">${grid(400, 300, 20)}<line class="bp" x1="0" y1="262" x2="400" y2="262"/>${d.bp}</svg>
-                <svg class="tile__built" viewBox="0 0 400 300"><rect width="400" height="300" fill="url(#tile-sky)"/>${d.bt}<rect y="262" width="400" height="38" fill="#3A3F46"/></svg>
+                <img class="tile__built" src="${p.photo}" alt="" loading="lazy">
               </div>
               <h4 class="tile__name">${p.name}</h4>
-              <p class="tile__meta">${p.place}. ${p.meta}</p>
+              <p class="tile__meta">${p.meta}</p>
             </article>
           </li>`;
         }).join('')}
@@ -332,11 +328,12 @@ function projects() {
 /* To use a real photo, add `photo: 'images/safety.jpg'` to a slide.   */
 /* ------------------------------------------------------------------ */
 const SLIDES = [
-  { label: 'Safety', title: 'Nothing on our sites matters more than everyone going home safe', link: '#safety', cta: 'See our safety record', scene: 'safety' },
-  { label: 'Design and technology', title: 'We build every project in 3D before the first pour', link: '#process', cta: 'How we build', scene: 'training' },
-  { label: 'Equipment', title: 'Our own cranes and machines, so your schedule never waits for a rental', link: '#contact', cta: 'Talk to us', scene: 'community' },
-  { label: 'Site surveys', title: 'Drone and ground scans find pipes and cables before we dig', link: '#process', cta: 'How we build', scene: 'tech' },
-  { label: 'Quality', title: 'Every concrete pour is tested, and you get the results', link: '#contact', cta: 'Ask for a sample report', scene: 'quality' },
+  { label: 'Nachhaltigkeit', title: 'Energieeffiziente Konzepte, die Ressourcen schonen', link: '#leistungen', cta: 'Unsere Leistungen', photo: 'https://images.unsplash.com/photo-1775733924031-521cd86c69cc?w=1400&q=75&auto=format&fit=crop' },
+  { label: 'Qualität', title: 'Hochwertige Materialien und sorgfältige Ausführung', link: '#ablauf', cta: 'So bauen wir', photo: 'https://images.unsplash.com/photo-1651195297119-afc97f14a40d?w=1400&q=75&auto=format&fit=crop' },
+  { label: 'Planung', title: 'Präzise Planung von der ersten Skizze bis zur Übergabe', link: '#ablauf', cta: 'Zum Ablauf', photo: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1400&q=75&auto=format&fit=crop' },
+  { label: 'Barrierefreiheit', title: 'Barrierefrei geplant für Pflege und betreutes Wohnen', link: '#leistungen', cta: 'Pflegeimmobilien', photo: 'https://images.unsplash.com/photo-1773227055624-07b515ba87c5?w=1400&q=75&auto=format&fit=crop' },
+  { label: 'Smart Building', title: 'Intelligente Gebäudetechnik für mehr Komfort und weniger Verbrauch', link: '#kontakt', cta: 'Beratung anfragen', photo: 'https://sonkin-bau.de/wp-content/uploads/2025/02/electrical-engineer-working-in-control-room-.jpg' },
+  { label: 'Sicherheit', title: 'Sicherheit und Sorgfalt auf jeder Baustelle', link: '#kontakt', cta: 'Kontakt aufnehmen', photo: 'https://images.unsplash.com/photo-1622612023350-b15f063eabe6?w=1400&q=75&auto=format&fit=crop' },
 ];
 
 async function expertise() {
@@ -345,11 +342,11 @@ async function expertise() {
   const bg = document.getElementById('lc-bg');
   const live = document.getElementById('lc-live');
   const { SCENES } = await import('./scenes.js');
-  const media = (s) => (s.photo ? `<img src="${s.photo}" alt="" loading="lazy">` : SCENES[s.scene]());
+  const media = (s) => (s.photo ? `<img src="${s.photo}" alt="" loading="lazy" draggable="false">` : SCENES[s.scene]());
   const N = SLIDES.length;
 
   track.innerHTML = SLIDES.map((s, i) => `
-    <div class="lc__slide" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${N}: ${s.label}" data-i="${i}">
+    <div class="lc__slide" role="group" aria-roledescription="Folie" aria-label="${i + 1} von ${N}: ${s.label}" data-i="${i}">
       <div class="lc__card">
         <div class="lc__media">${media(s)}</div>
         <div class="lc__cap">
@@ -416,14 +413,13 @@ async function expertise() {
 /* Safety board, nav, form                                             */
 /* ------------------------------------------------------------------ */
 function safety() {
-  const el = document.getElementById('days');
-  const days = Math.floor((Date.now() - new Date('2023-02-14T00:00:00+05:00')) / 864e5);
-  const fmt = (n) => Math.round(n).toLocaleString('en-US');
-  if (!gsap || !ScrollTrigger || reduced) { el.textContent = fmt(days); return; }
+  const el = document.getElementById('years');
+  const target = 15;
+  if (!gsap || !ScrollTrigger || reduced) { el.textContent = target; return; }
   const o = { n: 0 };
   ScrollTrigger.create({
     trigger: '.board', start: 'top 75%', once: true,
-    onEnter: () => gsap.to(o, { n: days, duration: 1.8, ease: 'power2.out', onUpdate: () => { el.textContent = fmt(o.n); } }),
+    onEnter: () => gsap.to(o, { n: target, duration: 1.6, ease: 'power2.out', onUpdate: () => { el.textContent = Math.round(o.n); } }),
   });
 }
 
@@ -434,7 +430,7 @@ function nav() {
   onScroll();
   const btn = navEl.querySelector('.nav__menu');
   const menu = document.getElementById('mobile-menu');
-  const set = (open) => { btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open; btn.textContent = open ? 'Close' : 'Menu'; };
+  const set = (open) => { btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open; btn.textContent = open ? 'Schließen' : 'Menü'; };
   btn.addEventListener('click', () => set(menu.hidden));
   menu.addEventListener('click', (e) => { if (e.target.closest('a')) set(false); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
@@ -458,15 +454,20 @@ function form() {
   };
   f.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = f.elements.name, phone = f.elements.phone;
+    const { name, phone, email } = f.elements;
     const okName = check(name, 'e-name', name.value.trim().length > 1);
-    const okPhone = check(phone, 'e-phone', phone.value.replace(/\D/g, '').length >= 10);
+    const okPhone = check(phone, 'e-phone', phone.value.replace(/\D/g, '').length >= 6);
+    const okMail = check(email, 'e-email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()));
     if (!okName) { name.focus(); return; }
     if (!okPhone) { phone.focus(); return; }
-    // No backend yet: connect this to Formspree, EmailJS or your own API.
-    done.textContent = `Request sent. We'll call ${name.value.trim().split(' ')[0]} within one working day.`;
+    if (!okMail) { email.focus(); return; }
+    // No server yet: the request opens in the visitor's e-mail program, addressed to Sonkin Bau.
+    // To send directly from the page, connect Formspree, EmailJS or your own API here.
+    const v = (k) => f.elements[k].value.trim();
+    const body = `Name: ${v('name')}\nFirma: ${v('company')}\nTelefon: ${v('phone')}\nE-Mail: ${v('email')}\n\n${v('message')}`;
+    window.location.href = `mailto:info@sonkin-bau.de?subject=${encodeURIComponent('Anfrage: ' + v('type'))}&body=${encodeURIComponent(body)}`;
+    done.textContent = 'Ihr E-Mail-Programm öffnet sich mit Ihrer Anfrage. Bitte dort auf „Senden“ klicken. Alternativ erreichen Sie uns unter 0511 96499920.';
     done.hidden = false;
-    f.reset();
   });
 }
 

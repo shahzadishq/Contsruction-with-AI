@@ -1,6 +1,6 @@
-# Bunyad Builders — construction website
+# Sonkin Bau — Website
 
-An award-style construction company website inspired by the techniques used on landonorris.com (Awwwards Site of the Year 2025), rebuilt for a construction business.
+An award-style construction company website inspired by the techniques used on landonorris.com (Awwwards Site of the Year 2025), rebuilt for Sonkin Bau GmbH (Hannover). Text and photos come from sonkin-bau.de; extra photos are free Unsplash images (hotlinked from images.unsplash.com).
 
 ## What's inside
 
@@ -41,10 +41,9 @@ fonts/              Big Shoulders, Big Shoulders Stencil, Public Sans (OFL)
 
 ## Things to replace before going live
 
-- Company name, phone, email and address (`index.html`)
-- The project list (`PROJECTS` in `js/main.js`)
-- The safety start date (`safety()` in `js/main.js`)
-- The quote form only shows a confirmation; connect it to Formspree, EmailJS or your own backend in `form()` in `js/main.js`
+- The project tiles (`PROJECTS` in `js/main.js`) and carousel photos (`SLIDES`)
+- The contact form opens the visitor's e-mail program addressed to info@sonkin-bau.de; to send directly from the page, connect Formspree or EmailJS in `form()` in `js/main.js`
+- Photos are loaded from sonkin-bau.de and Unsplash; for best speed, download them into an `images/` folder and update the paths
 - Colours live at the top of `css/style.css` (`--navy`, `--yellow` …)
 
 ## Expertise carousel (McCarthy-style)
